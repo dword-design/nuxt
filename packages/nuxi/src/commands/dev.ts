@@ -23,6 +23,8 @@ export default defineNuxtCommand({
     description: 'Run nuxt development server'
   },
   async invoke (args) {
+    const previousNodeEnv = process.env.NODE_ENV
+
     overrideEnv('development')
 
     const { listen } = await import('listhen')
@@ -179,6 +181,14 @@ export default defineNuxtCommand({
 
     await load(false)
 
-    return 'wait' as const
+    return {
+      close: async () => {
+        await distWatcher.close()
+        await watcher.close()
+        await listener.close()
+        await currentNuxt.close()
+        process.env.NODE_ENV = previousNodeEnv
+      },
+    };
   }
 })
