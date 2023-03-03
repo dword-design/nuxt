@@ -6,6 +6,7 @@ export async function runCommand (command: string, argv = process.argv.slice(2),
   const args = mri(argv)
   args.clear = false // used by dev
   args.config = options.config
+  args.rootDir = args._[0]
   const cmd = await commands[command as Command]() as NuxtCommand
   if (!cmd) {
     throw new Error(`Invalid command ${command}`)

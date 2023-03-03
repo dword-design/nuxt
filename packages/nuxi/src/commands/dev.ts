@@ -41,7 +41,7 @@ export default defineNuxtCommand({
       return currentHandler ? currentHandler(req, res) : loadingHandler(req, res)
     }
 
-    const rootDir = resolve(args._[0] || '.')
+    const rootDir = resolve(args.rootDir || '.')
     showVersions(rootDir)
 
     await setupDotenv({ cwd: rootDir, fileName: args.dotenv })
