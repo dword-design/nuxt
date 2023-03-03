@@ -23,6 +23,8 @@ export default defineNuxtCommand({
     description: 'Run nuxt development server'
   },
   async invoke (args) {
+    const previousNodeEnv = process.env.NODE_ENV
+
     overrideEnv('development')
 
     const { listen } = await import('listhen')
@@ -39,7 +41,7 @@ export default defineNuxtCommand({
       return currentHandler ? currentHandler(req, res) : loadingHandler(req, res)
     }
 
-    const rootDir = resolve(args._[0] || '.')
+    const rootDir = process.cwd()
     showVersions(rootDir)
 
     await setupDotenv({ cwd: rootDir, fileName: args.dotenv })
@@ -48,7 +50,8 @@ export default defineNuxtCommand({
 
     const config = await loadNuxtConfig({
       cwd: rootDir,
-      overrides: { dev: true }
+      overrides: { dev: true },
+      config: args.config,
     })
 
     const listener = await listen(serverHandler, {
@@ -88,7 +91,7 @@ export default defineNuxtCommand({
           await distWatcher.close()
         }
 
-        currentNuxt = await loadNuxt({ rootDir, dev: true, ready: false })
+        currentNuxt = await loadNuxt({ rootDir, dev: true, ready: false, config: args.config })
         currentNuxt.hooks.hookOnce('restart', () => load(true))
 
         if (!isRestart) {
@@ -178,6 +181,14 @@ export default defineNuxtCommand({
 
     await load(false)
 
-    return 'wait' as const
+    return {
+      close: async () => {
+        await distWatcher.close()
+        await watcher.close()
+        await listener.close()
+        await currentNuxt.close()
+        process.env.NODE_ENV = previousNodeEnv
+      },
+    };
   }
 })

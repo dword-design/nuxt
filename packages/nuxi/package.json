@@ -1,6 +1,6 @@
 {
-  "name": "nuxi",
-  "version": "3.2.3",
+  "name": "@dword-design/nuxi",
+  "version": "0.2.3",
   "repository": "nuxt/nuxt",
   "license": "MIT",
   "type": "module",
@@ -9,6 +9,7 @@
     ".": "./dist/index.mjs",
     "./cli": "./bin/nuxi.mjs"
   },
+  "main": "dist/index.mjs",
   "bin": "./bin/nuxi.mjs",
   "files": [
     "bin",
