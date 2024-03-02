@@ -13,7 +13,7 @@
     "prepack": "unbuild"
   },
   "devDependencies": {
-    "@nuxt/schema": "3.2.3",
+    "@nuxt/schema": "3.10.3",
     "@types/cssnano": "^5.1.0",
     "unbuild": "latest",
     "vue": "3.2.47"
